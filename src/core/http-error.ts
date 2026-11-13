@@ -1,9 +1,9 @@
 export class HttpError extends Error {
-  status: number;
+  readonly status: number;
 
-  constructor(_status: number, message?: string) {
-    // TODO: implement (TDD stub)
+  constructor(status: number, message: string = `HTTP ${status}`) {
     super(message);
-    this.status = 0;
+    this.name = 'HttpError';
+    this.status = status;
   }
 }
