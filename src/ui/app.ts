@@ -1,6 +1,6 @@
 import type { SearchController } from '../core/search-controller';
 import { element } from './dom';
-import { renderState } from './render';
+import { renderState, type Actions } from './render';
 
 /**
  * Builds the input and the result area ONCE and keeps them. Only the content of
@@ -21,5 +21,7 @@ export const mountApp = (root: HTMLElement, controller: SearchController): void 
 
   root.replaceChildren(input, area);
 
-  controller.subscribe((state) => area.replaceChildren(renderState(state)));
+  const actions: Actions = { retry: () => controller.retry() };
+
+  controller.subscribe((state) => area.replaceChildren(renderState(state, actions)));
 };

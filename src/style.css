@@ -42,3 +42,28 @@
   color: #6b7280;
   overflow-wrap: anywhere;
 }
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #b91c1c;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.retry-button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #b91c1c;
+  border-radius: 0.25rem;
+  background: #fff;
+  color: #991b1b;
+  font: inherit;
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background: #fee2e2;
+}
