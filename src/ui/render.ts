@@ -1,5 +1,6 @@
+import type { CountryCard } from '../core/country-card';
 import type { ViewState } from '../core/view-state';
-import { element } from './dom';
+import { createCard, element } from './dom';
 import { ERROR_MESSAGES, type ErrorState } from './error-messages';
 
 const renderIdle = (): HTMLElement =>
@@ -28,12 +29,27 @@ const renderError = ({ kind }: ErrorState, actions: Actions): HTMLElement => {
   ]);
 };
 
+const renderCard = (card: CountryCard, actions: Actions): HTMLElement => {
+  const button = createCard(card);
+  button.addEventListener('click', () => actions.openDetails(card.code));
+
+  return element('li', { className: 'cards-item' }, [button]);
+};
+
+const renderResults = (cards: readonly CountryCard[], actions: Actions): HTMLElement =>
+  element(
+    'ul',
+    { className: 'cards' },
+    cards.map((card) => renderCard(card, actions)),
+  );
+
 /** Placeholder for the states that are not drawn yet: shows only the status. */
 const renderPending = (state: ViewState): HTMLElement => element('p', { text: state.status });
 
 /** What the screen can ask the controller to do. */
 export interface Actions {
   retry(): void;
+  openDetails(code: string): void;
 }
 
 export const renderState = (state: ViewState, actions: Actions): HTMLElement => {
@@ -46,6 +62,8 @@ export const renderState = (state: ViewState, actions: Actions): HTMLElement => 
       return renderEmpty(state.query);
     case 'error':
       return renderError(state, actions);
+    case 'results':
+      return renderResults(state.cards, actions);
     default:
       return renderPending(state);
   }

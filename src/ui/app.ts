@@ -21,7 +21,10 @@ export const mountApp = (root: HTMLElement, controller: SearchController): void 
 
   root.replaceChildren(input, area);
 
-  const actions: Actions = { retry: () => controller.retry() };
+  const actions: Actions = {
+    retry: () => controller.retry(),
+    openDetails: (code) => controller.openDetails(code),
+  };
 
   controller.subscribe((state) => area.replaceChildren(renderState(state, actions)));
 };
