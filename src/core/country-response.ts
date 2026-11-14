@@ -20,6 +20,19 @@ export interface CountryResponse {
   borders?: string[];
   nativeName?: string;
   numericCode?: string;
+  /**
+   * Olympic committee code. Seen in live responses (Spain), absent for
+   * territories such as Antarctica.
+   */
+  cioc?: string;
+  /**
+   * Gini index. Seen in live responses (Spain), absent for Antarctica.
+   */
+  gini?: number;
+  /**
+   * Whether the country is a sovereign state (`false` for Antarctica).
+   */
+  independent?: boolean;
   flags?: Flags;
   currencies?: Currency[];
   languages?: Language[];
