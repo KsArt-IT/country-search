@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatList, formatNumber, formatText, NO_DATA } from './format';
+import { formatArea, formatList, formatNumber, formatText, NO_DATA } from './format';
 
 describe('formatNumber', () => {
   it.each([
@@ -17,6 +17,20 @@ describe('formatNumber', () => {
 
   it('shows a dash for null', () => {
     expect(formatNumber(null)).toBe(NO_DATA);
+  });
+});
+
+describe('formatArea', () => {
+  it('adds the unit and groups thousands', () => {
+    expect(formatArea(505992)).toBe('505,992 km²');
+  });
+
+  it('keeps an area of 0 as a real value', () => {
+    expect(formatArea(0)).toBe('0 km²');
+  });
+
+  it('shows a dash without a unit for null', () => {
+    expect(formatArea(null)).toBe(NO_DATA);
   });
 });
 

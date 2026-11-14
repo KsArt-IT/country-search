@@ -1,19 +1,28 @@
 import type { CountryCard } from '../core/country-card';
 import type { ViewState } from '../core/view-state';
-import { createCard, element } from './dom';
+import { createCard, createDetails } from './components';
+import { element } from './dom';
 import { ERROR_MESSAGES, type ErrorState } from './error-messages';
 
 const renderIdle = (): HTMLElement =>
-  element('p', { className: 'hint', text: 'Start typing a country name' });
+  element('p', {
+    className: 'hint',
+    text: 'Start typing a country name',
+    attrs: { role: 'status' },
+  });
 
 const renderLoading = (): HTMLElement =>
-  element('p', { className: 'loading' }, [
+  element('p', { className: 'loading', attrs: { role: 'status' } }, [
     element('span', { className: 'spinner', attrs: { 'aria-hidden': 'true' } }),
     element('span', { text: 'Loading…' }),
   ]);
 
 const renderEmpty = (query: string): HTMLElement =>
-  element('p', { className: 'empty', text: `Nothing found for “${query}”` });
+  element('p', {
+    className: 'empty',
+    text: `Nothing found for “${query}”`,
+    attrs: { role: 'status' },
+  });
 
 const renderError = ({ kind }: ErrorState, actions: Actions): HTMLElement => {
   const retryButton = element('button', {
@@ -43,13 +52,19 @@ const renderResults = (cards: readonly CountryCard[], actions: Actions): HTMLEle
     cards.map((card) => renderCard(card, actions)),
   );
 
-/** Placeholder for the states that are not drawn yet: shows only the status. */
-const renderPending = (state: ViewState): HTMLElement => element('p', { text: state.status });
+/** Shown INSTEAD of the list; "Back" returns to the same list without a new request. */
+const renderDetails = (card: CountryCard, actions: Actions): HTMLElement => {
+  const { root, backButton } = createDetails(card);
+  backButton.addEventListener('click', () => actions.closeDetails());
+
+  return root;
+};
 
 /** What the screen can ask the controller to do. */
 export interface Actions {
   retry(): void;
   openDetails(code: string): void;
+  closeDetails(): void;
 }
 
 export const renderState = (state: ViewState, actions: Actions): HTMLElement => {
@@ -64,7 +79,12 @@ export const renderState = (state: ViewState, actions: Actions): HTMLElement => 
       return renderError(state, actions);
     case 'results':
       return renderResults(state.cards, actions);
-    default:
-      return renderPending(state);
+    case 'details':
+      return renderDetails(state.selected, actions);
+    default: {
+      // A new ViewState status without a case above fails here, in tsc, not on the screen.
+      const unreachable: never = state;
+      return unreachable;
+    }
   }
 };

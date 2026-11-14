@@ -17,7 +17,23 @@ body {
   max-width: 1200px;
   min-height: 100vh;
   margin: 0 auto;
+  padding: 1rem;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font: inherit;
 }
 
 .hint {
@@ -84,9 +100,13 @@ body {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
   gap: 0.75rem;
   list-style: none;
+}
+
+.cards-item {
+  min-width: 0;
 }
 
 .card {
@@ -111,7 +131,7 @@ body {
 
 .card-flag {
   flex: none;
-  width: 3.5rem;
+  width: 7rem;
   height: auto;
   border: 1px solid #e5e7eb;
 }
@@ -131,4 +151,84 @@ body {
 .card-field {
   color: #4b5563;
   font-size: 0.9rem;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.back-button {
+  align-self: flex-start;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  border-color: #6b7280;
+}
+
+.details-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.details-header h2 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.details-flag {
+  width: 10rem;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #e5e7eb;
+}
+
+.details-description {
+  max-width: 40rem;
+}
+
+.details-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.details-item {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.details-item dt {
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.details-item dd {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 30rem) {
+  .card-flag {
+    width: 4.5rem;
+  }
+
+  .details-flag {
+    width: 7rem;
+  }
+
+  .details-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
 }

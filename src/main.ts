@@ -4,7 +4,7 @@ import { searchCountries } from './core/search-countries';
 import { mountApp } from './ui/app';
 import { element } from './ui/dom';
 
-const root = element('div');
+const root = element('div', { className: 'app' });
 document.body.append(root);
 
 mountApp(root, createSearchController({ search: searchCountries }));

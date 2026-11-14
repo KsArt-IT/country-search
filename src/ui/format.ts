@@ -7,6 +7,10 @@ const numberFormat = new Intl.NumberFormat('en-US');
 export const formatNumber = (value: number | null): string =>
   value === null ? NO_DATA : numberFormat.format(value);
 
+/** 505992 -> "505,992 km²". The unit is added only when there is a value. */
+export const formatArea = (value: number | null): string =>
+  value === null ? NO_DATA : `${formatNumber(value)} km²`;
+
 export const formatText = (value: string | null): string => (value ? value : NO_DATA);
 
 export const formatList = (items: readonly string[]): string =>
