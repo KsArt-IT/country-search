@@ -10,6 +10,9 @@ const renderLoading = (): HTMLElement =>
     element('span', { text: 'Loading…' }),
   ]);
 
+const renderEmpty = (query: string): HTMLElement =>
+  element('p', { className: 'empty', text: `Nothing found for “${query}”` });
+
 /** Placeholder for the states that are not drawn yet: shows only the status. */
 const renderPending = (state: ViewState): HTMLElement => element('p', { text: state.status });
 
@@ -19,6 +22,8 @@ export const renderState = (state: ViewState): HTMLElement => {
       return renderIdle();
     case 'loading':
       return renderLoading();
+    case 'empty':
+      return renderEmpty(state.query);
     default:
       return renderPending(state);
   }

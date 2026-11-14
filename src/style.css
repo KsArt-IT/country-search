@@ -37,3 +37,8 @@
     animation: none;
   }
 }
+
+.empty {
+  color: #6b7280;
+  overflow-wrap: anywhere;
+}
