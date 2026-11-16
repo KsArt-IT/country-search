@@ -1,0 +1,44 @@
+[
+  {
+    "area": 603700,
+    "cioc": "UKR",
+    "flag": "🇺🇦",
+    "gini": 26.6,
+    "name": "Ukraine",
+    "flags": {
+      "png": "https://flagcdn.com/w320/ua.png",
+      "svg": "https://flagcdn.com/ua.svg"
+    },
+    "latlng": [49, 32],
+    "region": "Europe",
+    "borders": ["BLR", "HUN", "MDA", "POL", "ROU", "RUS", "SVK"],
+    "capital": "Kyiv",
+    "demonym": "Ukrainian",
+    "languages": [
+      {
+        "name": "Ukrainian",
+        "iso639_1": "uk",
+        "iso639_2": "ukr",
+        "nativeName": "Українська"
+      }
+    ],
+    "subregion": "Eastern Europe",
+    "timezones": ["UTC+02:00"],
+    "alpha2Code": "UA",
+    "alpha3Code": "UKR",
+    "currencies": [
+      {
+        "code": "UAH",
+        "name": "Ukrainian hryvnia",
+        "symbol": "₴"
+      }
+    ],
+    "nativeName": "Україна",
+    "population": 44134693,
+    "independent": true,
+    "numericCode": "804",
+    "callingCodes": ["380"],
+    "topLevelDomain": [".ua"],
+    "populationDensity": 73.11
+  }
+]
