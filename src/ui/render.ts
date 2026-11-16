@@ -1,6 +1,6 @@
 import type { CountryCard } from '../core/country-card';
 import type { ViewState } from '../core/view-state';
-import { createCard, createDetails } from './components';
+import { createCard, createDetails, createHistoryItem } from './components';
 import { element } from './dom';
 import { ERROR_MESSAGES, type ErrorState } from './error-messages';
 
@@ -87,4 +87,21 @@ export const renderState = (state: ViewState, actions: Actions): HTMLElement => 
       return unreachable;
     }
   }
+};
+
+/** The row of recent queries: a label and one button per query. Empty history: nothing. */
+export const renderHistory = (
+  queries: readonly string[],
+  onPick: (query: string) => void,
+): HTMLElement[] => {
+  if (queries.length === 0) return [];
+
+  return [
+    element('span', { className: 'history-label', text: 'Recent:' }),
+    ...queries.map((query) => {
+      const button = createHistoryItem(query);
+      button.addEventListener('click', () => onPick(query));
+      return button;
+    }),
+  ];
 };

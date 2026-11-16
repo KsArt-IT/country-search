@@ -68,3 +68,7 @@ export const createDetails = (
 
   return { root, backButton };
 };
+
+/** A recent query as a button: a click repeats the search. */
+export const createHistoryItem = (query: string): HTMLButtonElement =>
+  element('button', { className: 'history-item', text: query, attrs: { type: 'button' } });

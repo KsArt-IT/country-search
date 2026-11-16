@@ -232,3 +232,34 @@ body {
     gap: 0.15rem;
   }
 }
+
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.history[hidden] {
+  display: none;
+}
+
+.history-label {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.history-item {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.history-item:hover {
+  border-color: #6b7280;
+}
