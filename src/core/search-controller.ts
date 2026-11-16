@@ -101,9 +101,14 @@ export const createSearchController = ({
       debouncedRun(query);
     },
 
-    searchNow: () => {
-      // TODO: implement (TDD stub)
-      throw new Error('Not implemented');
+    searchNow: (text) => {
+      const query = text.trim();
+      abortActiveRequest();
+      // Same trick as in `input`: an empty query replaces a pending typed one,
+      // so it does not fire later and overwrite this search.
+      debouncedRun('');
+      setState(query === '' ? IDLE : { status: 'loading', query });
+      run(query);
     },
 
     retry: () => {
