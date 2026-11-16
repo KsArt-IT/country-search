@@ -645,4 +645,151 @@ describe('createSearchController', () => {
       await expectNoOp(() => controller.retry());
     });
   });
+
+  // --- searchNow: a click on a history item, no debounce ---
+
+  describe('searchNow', () => {
+    it('starts the request at once, without waiting for debounce', () => {
+      controller.searchNow('spain');
+
+      expect(fake.calls).toHaveLength(1);
+      expect(lastCall().query).toBe('spain');
+      expect(controller.getState()).toEqual({ status: 'loading', query: 'spain' });
+    });
+
+    it('shows the results of the request', async () => {
+      controller.searchNow('spain');
+
+      lastCall().resolve([spainRaw]);
+      await settle();
+
+      expect(controller.getState()).toEqual({
+        status: 'results',
+        query: 'spain',
+        cards: [spainCard],
+      });
+    });
+
+    it('shows an error with the kind of the failure', async () => {
+      controller.searchNow('spain');
+
+      lastCall().reject(new HttpError(500));
+      await settle();
+
+      expect(controller.getState()).toEqual({ status: 'error', query: 'spain', kind: 'http' });
+    });
+
+    it('trims the query', () => {
+      controller.searchNow('  spain ');
+
+      expect(lastCall().query).toBe('spain');
+      expect(controller.getState()).toEqual({ status: 'loading', query: 'spain' });
+    });
+
+    it.each(['', '   '])('goes idle and sends nothing for an empty query (%j)', async (text) => {
+      controller.searchNow(text);
+      await advance(DEBOUNCE_MS * 2);
+
+      expect(controller.getState()).toEqual({ status: 'idle' });
+      expect(fake.calls).toHaveLength(0);
+    });
+
+    it('aborts the request in flight', async () => {
+      await type('sp');
+      const first = lastCall();
+
+      controller.searchNow('spain');
+
+      expect(first.signal.aborted).toBe(true);
+      expect(lastCall().query).toBe('spain');
+    });
+
+    it('does not show the aborted request as an error', async () => {
+      const states = track();
+      await type('sp');
+
+      controller.searchNow('spain');
+      await settle();
+
+      expect(statuses(states)).not.toContain('error');
+    });
+
+    it('drops a pending debounced query: it is not sent later', async () => {
+      controller.input('sp'); // waits for debounce
+
+      controller.searchNow('spain');
+      await advance(DEBOUNCE_MS * 2);
+
+      expect(fake.calls.map((call) => call.query)).toEqual(['spain']);
+    });
+
+    it('a pending typed query does not overwrite the result of the click', async () => {
+      controller.input('spa'); // still waiting for debounce
+      controller.searchNow('ukraine');
+      lastCall().resolve([ukraineRaw]);
+
+      await advance(DEBOUNCE_MS * 2); // the old debounce timer would fire in here
+
+      expect(fake.calls.map((call) => call.query)).toEqual(['ukraine']);
+      expect(controller.getState()).toEqual({
+        status: 'results',
+        query: 'ukraine',
+        cards: [ukraineCard],
+      });
+    });
+
+    it('drops a pending debounced query when the search is empty', async () => {
+      controller.input('spa');
+
+      controller.searchNow('');
+      await advance(DEBOUNCE_MS * 2);
+
+      expect(fake.calls).toHaveLength(0);
+      expect(controller.getState()).toEqual({ status: 'idle' });
+    });
+
+    it('is overridden by later typing: the old answer is not shown', async () => {
+      controller.searchNow('spain');
+      const first = lastCall();
+
+      controller.input('ukraine');
+      expect(first.signal.aborted).toBe(true);
+      first.resolve([spainRaw]); // too late
+      await advance(DEBOUNCE_MS);
+      lastCall().resolve([ukraineRaw]);
+      await settle();
+
+      expect(controller.getState()).toMatchObject({ status: 'results', query: 'ukraine' });
+    });
+
+    it.each([
+      ['results', (): Promise<void> => toResults('spain')],
+      ['an error', (): Promise<void> => toError('spain')],
+      [
+        'details',
+        async (): Promise<void> => {
+          await toResults('spain');
+          controller.openDetails('ESP');
+        },
+      ],
+    ])('replaces %s with a new search', async (_state, reach) => {
+      await reach();
+
+      controller.searchNow('ukraine');
+
+      expect(controller.getState()).toEqual({ status: 'loading', query: 'ukraine' });
+      expect(lastCall().query).toBe('ukraine');
+    });
+
+    it('lets retry() repeat its query after a failure', async () => {
+      controller.searchNow('spain');
+      lastCall().reject(new HttpError(500));
+      await settle();
+
+      controller.retry();
+
+      expect(fake.calls).toHaveLength(2);
+      expect(lastCall().query).toBe('spain');
+    });
+  });
 });

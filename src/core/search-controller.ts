@@ -20,6 +20,12 @@ export interface SearchController {
   subscribe(listener: (state: ViewState) => void): () => void;
   /** Call on EVERY change of the input field. */
   input(text: string): void;
+  /**
+   * Same as `input`, but starts the request at once, without waiting for debounce
+   * (for a click on a history item). Cancels the request in flight and drops a
+   * pending debounced one.
+   */
+  searchNow(text: string): void;
   /** Repeats the query stored in the `error` state. No-op in any other state. */
   retry(): void;
   /** Opens the card with this alpha-3 code. No-op unless the state is `results` and the code exists. */
@@ -93,6 +99,11 @@ export const createSearchController = ({
       abortActiveRequest();
       setState(query === '' ? IDLE : { status: 'loading', query });
       debouncedRun(query);
+    },
+
+    searchNow: () => {
+      // TODO: implement (TDD stub)
+      throw new Error('Not implemented');
     },
 
     retry: () => {
